@@ -1,0 +1,88 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+	int data;
+	struct Node* next;
+	struct Node* prev;
+};
+
+struct Node* head;
+
+struct Node* getNode(int n) {
+	struct Node* t = (struct Node*)malloc(sizeof(struct Node));
+	t->data = n;
+	t->next = NULL;
+	t->prev = NULL;
+	return t;
+}
+
+void Create(int n) {
+	Node* temp = head;
+	struct Node* newNode = getNode(n);
+	if (head == NULL) {
+		head = newNode;
+		temp = head;
+		return;
+	}
+
+	while (temp->next != NULL) {
+		temp = temp->next;
+	}
+	temp->next = newNode;
+	newNode->prev = temp;
+	temp = newNode;
+}
+
+void CreatebyNum(int n, int q) {
+	int i;
+	Node* temp = head;
+	struct Node* newNode = getNode(q);
+	for (i = 0; i < n - 2; i++) {
+		temp = temp->next;
+	}
+	Node* temp1 = temp->next;
+	newNode->next = temp1;
+	temp->next = newNode;
+	temp1->prev = newNode;
+	newNode->prev = temp;
+}
+
+void Print() {
+	Node* temp = head;
+	while (temp != NULL) {
+		printf("%d ", temp->data);
+		temp = temp->next;
+	}
+	printf("\n");
+}
+
+
+void Delete(int n) {
+	Node* t = head;
+	int i;
+	for (i = 0; i < n - 2; i++) {
+		t = t->next;
+	}
+	Node* r = t->next;
+	t->next = r->next;
+	(r->next)->prev = t;
+}
+
+int main() {
+	Create(1);
+	Create(2);
+	Create(3);
+	Create(4);
+	Create(5);
+	Create(6);
+	Print();  //123456
+	printf("\n");
+	CreatebyNum(3,8);
+	Print();  //1283456
+	printf("\n");
+	Delete(3);
+	Print(); //123456
+	printf("\n");
+	return 0;
+}
