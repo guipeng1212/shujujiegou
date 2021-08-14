@@ -1,0 +1,57 @@
+#include <stdio.h>
+#include <stdlib.h>
+struct Node {
+	int data;
+	Node* next;
+};//生成一个结构体
+struct Node* head;  //定义头结点
+Node* t = head;  // 让 t = 头结点
+void Insert(int n) {
+	Node* p = (Node*)malloc(sizeof(struct Node)); // 开辟一个内存空间
+	p->data = n;
+	p->next = NULL;
+	if (head == NULL) {  // 当head等于null时，让head指向p；
+		head = p;
+		t = p;  // 一样
+		return;
+	}
+	t->next = p;  //要想在结尾连上，此时t指向的是p1，就需要让t->next指向p2;
+	t = p;  // 让t指向p2；达到循环
+}
+void Print() {
+	Node* p = head;
+	while (p != NULL) {
+		printf("%d ", p->data);
+		p = (*p).next;
+	}
+	printf("\n");
+
+}
+void Change(Node* t) {
+	
+	if (t->next == NULL) { //递归的终点
+		head = t;
+		return;
+	};
+	Change(t->next);
+
+	Node* q = t->next; 
+	q->next = t;
+	t->next = NULL;
+}
+
+int main() {
+	int n;
+	head = NULL;
+	Insert(2);
+	Insert(4);
+	Insert(6);
+	Insert(5);
+	printf("\n");
+	Print();
+	printf("翻转\n");
+	Change(head);
+	printf("\n");
+	Print();
+	return 0;
+}
