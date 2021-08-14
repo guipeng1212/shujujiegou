@@ -1,0 +1,60 @@
+#include <stdio.h>
+#include <stdlib.h>
+struct Node {
+	int data;
+	Node* next;
+};//生成一个结构体
+struct Node* head;  //定义头结点
+Node* t=head;  // 让 t = 头结点
+void Insert(int n) {
+    Node* p = (Node*)malloc(sizeof (struct Node)); // 开辟一个内存空间
+	p->data = n;
+	p->next = NULL;
+	if (head == NULL) {  // 当head等于null时，让head指向p；
+		head = p;
+		t = p;  // 一样
+		return;
+	}
+	t->next = p;  //要想在结尾连上，此时t指向的是p1，就需要让t->next指向p2;
+	t = p;  // 让t指向p2；达到循环
+}
+void Print() {
+	Node* p = head;
+	while (p != NULL) {
+		printf("%d ", p->data);
+		p = (*p).next;
+	}
+
+}
+void Delete(int n) {
+	int i;
+	Node* y = head;
+	if (n == 1) {
+		head = y->next;
+		free(y);
+		return;
+	}
+	for (i = 0; i < n - 2; i++) {
+		y = y->next;
+	} // 此时为n-1的结点
+	Node* y1 = y->next; //此时为n的结点
+	y->next = y1->next; // 把n-1的next指向n的next也就是n+1;
+	free(y1);
+
+}
+
+int main() {
+	int n;
+	head = NULL;
+	Insert(2);
+	Insert(4);
+	Insert(6);
+	Insert(5);
+	printf("\n");
+	Print();
+	printf("输入删除的结点\n");
+	scanf_s("%d", &n);
+	Delete(n);
+	Print();
+	return 0;
+}
