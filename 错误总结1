@@ -1,0 +1,15 @@
+// 1，以下为错误：
+void pop() {
+	struct Node* t;
+	if (top = NULL) {  //错误点
+		printf("没了，别pop了，光了\n");
+		return;
+	}
+	t = top;
+	top = top->link;
+	free(t);
+}
+
+//1. 改正：
+if (top == NULL)
+这将导致编译器提示：top 为 nullptr;
