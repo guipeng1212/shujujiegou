@@ -1,0 +1,82 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+	float data;
+	struct Node* link;
+}Node;
+struct Node* top = NULL;
+
+void push(float n) {
+	struct Node* temp = (struct Node*)malloc(sizeof(struct Node));
+	temp->data = n;
+	temp->link = top;
+	top = temp;
+}
+
+void pop() {
+	struct Node* t;
+	if (top == NULL) {
+		printf("没了，别pop了，光了\n");
+		return;
+	}
+	t = top;
+	top = top->link;
+	free(t);
+}
+
+//判断输入运算符 
+int operate(char c)
+{
+	switch (c)
+	{
+	case '+':return 1;
+	case '-':return 1;
+	case '*':return 1;
+	case '/':return 1;
+	default:return 0;
+	}
+}
+
+//输入表达式 
+float cal(float a, float b, char c)
+{
+	switch (c)
+	{
+	case '+':return a + b;
+	case '-':return a - b;
+	case '*':return a * b;
+	case '/':return a / b;
+	}
+}
+
+
+//主函数 
+int main()
+{
+	float a, b, result;
+	char c1 = '0';
+	printf("输入后缀表达式：");
+	while (c1 != '#')
+	{
+		c1 = getchar();
+
+		if (!operate(c1))
+		{
+
+			push((float)(c1 - 48));  //用于将字符型转化为数值型。
+		}
+		else
+		{
+			b = top->data;
+			pop();
+			a = top->data;
+			pop();
+			result = cal(a, b, c1);  //计算结果
+			push(result);  //将结果重新放入栈中作为一个数。
+		}
+
+	}
+	printf("%f\n", result);
+	return 0;
+}
