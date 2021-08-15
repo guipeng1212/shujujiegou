@@ -1,0 +1,49 @@
+#include <stdio.h>
+#include <stdlib.h>
+struct Node {
+	int data;
+	struct Node* link;
+};
+struct Node* top=NULL;
+
+void push(int n) {
+	struct Node* temp = (struct Node*)malloc(sizeof(struct Node));
+	temp->data = n;
+	temp->link = top;
+	top = temp;
+}
+
+void pop() {
+	struct Node* t;
+	if (top == NULL) {
+		printf("没了，别pop了，光了\n");
+		return;
+	}
+	t = top;
+	top = top->link;
+	free(t);
+}
+
+void Print() {
+	Node* t = top;
+	while (t != NULL) {
+		printf("%d ", t->data);
+		t = t->link;
+	}
+
+	printf("\n");
+
+}
+int main() {
+	push(1);
+	push(2);
+	push(3);
+	push(4);
+	push(5);
+	push(6);
+	Print();
+	pop();
+	pop();
+	Print();
+	return 0;
+}
