@@ -1,0 +1,127 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct
+{
+	float *base;
+	float *top;
+	int StackSize;
+}Stack;
+
+/*A: typedef struct 与B: struct 的区别
+1.声明：
+	A:
+	typedef struct Person
+{
+	int a;
+} Per; // Per 是别名 
+
+然后 Per xxx;
+	B:
+	struct Person
+{
+	int a;
+};
+
+然后 struct Person xxx;
+*/
+
+
+
+//创建一个栈，100为Maxsize，#define无法定义 
+void Createstack(Stack &s)  //为s的地址,所以只能.
+{
+	s.base = (float *)malloc(100 * sizeof(float));
+	s.top = s.base;   //让top 等于 这个结点储存的数值
+	s.StackSize = 100;
+
+}
+
+//栈顶指针 
+float top(Stack s)
+{
+	if (s.top == s.base)
+	{
+		return -1;
+		printf("error!\n");
+		//栈满               
+	}
+	return *(s.top - 1);
+}
+
+// 入栈程序 
+void push(Stack &s, float elem)
+{
+	
+	*s.top++ = elem;
+}
+
+//出栈程序 
+void pop(Stack &s)
+{
+	if (s.top == s.base)
+	{
+		//栈空 
+		printf("error!\n");
+		return;
+	}
+	s.top--;
+}
+
+//判断输入运算符 
+int operate(char c)
+{
+	switch (c)
+	{
+	case '+':return 1;
+	case '-':return 1;
+	case '*':return 1;
+	case '/':return 1;
+	default:return 0;
+	}
+}
+
+//输入表达式 
+float cal(float a, float b, char c)
+{
+	switch (c)
+	{
+	case '+':return a + b;
+	case '-':return a - b;
+	case '*':return a * b;
+	case '/':return a / b;
+	}
+}
+
+
+//主函数 
+int main()
+{
+	float a, b, result;
+	Stack s;
+	Createstack(s);
+	char c1 = '0';
+	printf("输入后缀表达式：");
+	while (c1 != '#')
+	{
+		c1 = getchar();
+
+		if (!operate(c1))
+		{
+
+			push(s, (float)(c1 - 48));  //用于将字符型转化为数值型。
+		}
+		else
+		{
+			b = top(s);
+			pop(s);
+			a = top(s);
+			pop(s);
+			result = cal(a, b, c1);  //计算结果
+			push(s, result);  //将结果重新放入栈中作为一个数。
+		}
+
+	}
+	printf("%f\n", result);
+	return 0;
+}
