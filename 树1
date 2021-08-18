@@ -1,0 +1,72 @@
+#include <stdio.h>
+#include <stdlib.h>
+typedef struct Bstnode {
+	int data;
+	struct Bstnode* left;
+	struct Bstnode* right;
+}Bstnode;
+
+struct Bstnode* root;
+
+struct Bstnode* Getnode(int data) {
+	struct Bstnode* temp = (struct Bstnode*)malloc(sizeof(struct Bstnode));
+	temp->data = data;
+	temp->left = temp->right = NULL;
+	return temp;
+}
+
+
+Bstnode* Insert(Bstnode* root, int data) {
+	if (root == NULL) {
+
+		root = Getnode(data); //把root设置成新节点的值
+		return root;
+	}
+	else if (data <= root->data) {
+		root->left = Insert(root->left, data);//向左递归
+	}   //到了深度三：比如插入25,25<15(root),向右,25>20,向左,此时的传入函数的root->left值为NULL,
+		//所以调用第一个if,创建一个内存空间，然后依次返回,再把root还原到原来的位置。
+	else {
+		root->right = Insert(root->right, data);//向右递归
+	}
+	return root;
+}
+
+//搜索
+bool Found(Bstnode* root, int n) {
+	if (root == NULL) return false;
+	else if (root->data = n) return true;
+	else if (n > root->data) return Found(root->right, n);
+	else return Found(root->left, n);
+}
+
+//查找最大值最小值
+int maxin(Bstnode* root,int n) {
+	struct Bstnode* t = root;
+	if (n) {
+		while (root->right != NULL) {
+			root = root->right;
+		}
+		return root->data;
+	}
+	else {
+		while (root->left != NULL) {
+			root = root->left;
+		}
+		return root->data;
+	}
+}
+int main() {
+	int i;
+	root = NULL;
+	root = Insert(root, 15);//接收返回值，更新main中的root的值
+	root = Insert(root, 20);//如果不更新，则root的值永远是NULL;
+	root = Insert(root, 18);
+	root = Insert(root, 25);
+	root = Insert(root, 12);
+	root = Insert(root, 11);
+	root = Insert(root, 24);
+	printf("请输入你要找最大值还是最小值（1/0）：\n");
+	scanf_s("%d", &i);
+	printf("%d\n", maxin(root, i));
+}
