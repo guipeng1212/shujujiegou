@@ -1,0 +1,69 @@
+#include <stdio.h>
+#include <stdlib.h>
+//创建树以及前序遍历，，注意输入时要特别注意格式
+typedef struct Tree {
+	int data;
+	struct Tree* lchild;
+	struct Tree* rchild;
+}Tree;
+
+void createTree(Tree** T, int* data, int* index) {
+	int ch;
+	ch = data[*index];
+	*index += 1;
+	if (ch == '#') {
+		*T = NULL;
+	}
+	else {
+		*T = (Tree*)malloc(sizeof(Tree));
+		(*T)->data = ch;
+		createTree(&((*T)->lchild), data, index);
+		createTree(&((*T)->rchild), data, index);
+	}
+
+
+
+}
+
+void Preorder(Tree* T) {
+	if (T == NULL) {
+		return;
+	}
+	else {
+		printf("%c ", T->data);
+		Preorder(T->lchild);
+		Preorder(T->rchild);
+	}
+}
+
+bool IsBstUtil(Tree* T, int minValue, int maxValue) {
+	if (T == NULL) {
+		return true;
+	}
+	if (T->data > minValue && T->data < maxValue
+		&& IsBstUtil(T->lchild, minValue, T->data)
+		&& IsBstUtil(T->rchild, T->data, maxValue))
+		return true;
+	else
+		return false;
+}
+bool IBST(Tree* T) {
+	return IsBstUtil(T, INT_MIN, INT_MAX);  //系统给的最大值最小值
+}
+
+int main() {
+	Tree* T;
+	int index = 0;
+	int c;
+	int ch[20];
+	while ((c = getchar()) && c != '\n')
+		ch[index++] = c;
+	index = 0;
+	createTree(&T, ch, &index); //要改变的值需要传地址
+	Preorder(T);
+	printf("\n");
+	if (IBST(T))
+		printf("正确\n");
+	else
+		printf("错误\n");
+}
