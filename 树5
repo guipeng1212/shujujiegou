@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+//创建树以及前序遍历，，注意输入时要特别注意格式
 typedef struct Tree {
 	char data;
 	struct Tree* lchild;
