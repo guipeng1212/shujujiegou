@@ -1,0 +1,55 @@
+#include <stdio.h>
+#include <stdlib.h>
+typedef struct Bstnode {
+	int data;
+	struct Bstnode* left;
+	struct Bstnode* right;
+}Bstnode;
+
+struct Bstnode* root;
+
+struct Bstnode* Getnode(int data) {
+	struct Bstnode* temp = (struct Bstnode*)malloc(sizeof(struct Bstnode));
+	temp->data = data;
+	temp->left = temp->right = NULL;
+	return temp;
+}
+
+
+Bstnode* Insert(Bstnode* root, int data) {
+	if (root == NULL) {
+
+		root = Getnode(data); //把root设置成新节点的值
+		return root;
+	}
+	root->left = Insert(root->left, data); return root;//向左递归
+	root->right = Insert(root->right, data); return root;//向右递归
+}
+
+
+
+
+
+void preorder(Bstnode* root) {
+	if (root == NULL) {
+		return ;
+	}
+	else {
+		printf("%d ", root->data);
+		preorder(root->left);
+		preorder(root->right);
+	}
+}
+
+int main() {
+	int i;
+	root = NULL;
+	root = Insert(root, 15);
+	root = Insert(root, 20);
+	root = Insert(root, 18);
+	root = Insert(root, 25);
+	root = Insert(root, 12);
+	root = Insert(root, 11);
+	root = Insert(root, 24);
+	preorder(root);
+}
