@@ -1,0 +1,144 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+
+//用链表包含树，用队列包含链表！！！！！！！
+typedef struct tree {
+	char date;
+	struct tree*pLeft, *pRight;
+}TREE, *PTREE;
+
+
+
+typedef struct List {
+	PTREE pBit;
+	struct List *pNext;  //链表
+}NODE, *PNODE;
+
+
+
+typedef struct queue {
+	PNODE front;
+	PNODE rear;         //用链表定义队列的首尾节点。所以说该结点就是队列的属性
+}QUEUE, *PQUEUE;
+
+
+
+void init_queue(PQUEUE);               /*初始化队列*/
+void en_queue(PQUEUE, PTREE);           /*入队操作*/
+PTREE out_queue(PQUEUE);               /*出队操作*/
+void creat_tree(PTREE*);               /*利用先序遍历的方式创建二叉树*/
+void traverse_tree(PTREE);             /*实现树的层序遍历*/
+PTREE Init();
+
+
+int main(void)
+{
+	PTREE pT;
+	printf("创建树：\n");
+	pT = Init();
+	printf("\n层次遍历:\n");
+	traverse_tree(pT);
+	system("pause");
+	return 0;
+}
+
+/*初始化队列*/
+void init_queue(PQUEUE pQ)
+{
+	pQ->rear = pQ->front = (PNODE)malloc(sizeof(NODE));
+	if (pQ->front == NULL)
+		exit(0);
+	pQ->front->pNext = NULL;
+	return;
+}
+
+
+/*入队操作*/
+void en_queue(PQUEUE pQ, PTREE pT)
+{
+	PNODE pNew = (PNODE)malloc(sizeof(NODE));
+	if (pNew == NULL)
+		exit(0);
+	else
+	{
+		pNew->pBit = pT;   //意味着让链表的pbit储存树pt。
+		pNew->pNext = NULL;
+		pQ->rear->pNext = pNew; //让队列链表节点rear的下一个指向这个新的。
+		pQ->rear = pNew;  //实现尾链表节点的移动
+		return;
+	}
+}
+
+
+/*出队操作*/
+PTREE out_queue(PQUEUE pQ)
+{
+	PNODE p = pQ->front->pNext;  //让p指向front指向的。
+	if (pQ->front == pQ->rear)
+		return NULL;
+	pQ->front->pNext = p->pNext;  //让front指向p的下一个,也就是front的下一个
+	if (pQ->rear == p)
+		pQ->rear = pQ->front;
+	return p->pBit;
+}
+
+
+/*利用先序遍历的方式创建二叉树*/
+void creat_tree(PTREE *pT)
+{
+	char ch;
+	ch = getchar();
+	if (ch == '#')
+		*pT = NULL;
+	else
+	{
+		*pT = (PTREE)malloc(sizeof(PTREE));
+		(*pT)->date = ch;
+		creat_tree(&(*pT)->pLeft);
+		creat_tree(&(*pT)->pRight);
+	}
+	return ;
+	
+}
+
+PTREE Init()
+{
+	char ch;
+	PTREE t;
+	ch = getchar();
+	if (ch == '#')
+		t = NULL;
+	else
+	{
+		t = (PTREE)malloc(sizeof(PTREE));
+		t->date = ch;
+		t->pLeft = Init();
+		t->pRight = Init();
+	}
+	return t;
+}
+
+
+/*实现树的层序遍历*/
+void traverse_tree(PTREE pT)
+{
+	PTREE t = NULL;
+	QUEUE pQ;
+	init_queue(&pQ);
+	if (pT != NULL)
+		en_queue(&pQ, pT);      //一个是地址，一个是值，地址可以改变（解引用）/*若树不空，让根节点入队*/
+	else
+		return;
+	while (pQ.front != pQ.rear)                 /*队列不空*/
+	{
+		t = out_queue(&pQ);                    /*让队列中元素出队,先让根节点出队，才能继续实现接下来的入队*/
+		printf("%c\t", t->date);
+		if (t->pLeft != NULL)                   /*判断左子树是否为空*/
+			en_queue(&pQ, t->pLeft);            /*不空则让它入队*/
+		if (t->pRight != NULL)                  /*判断右子树是否为空*/
+			en_queue(&pQ, t->pRight);           /*不空则让它入队*/
+	}
+	printf("\n");
+	return;
+}
