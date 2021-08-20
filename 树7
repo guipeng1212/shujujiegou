@@ -1,0 +1,98 @@
+#include <stdio.h>
+#include <stdlib.h>
+//创建树以及前序遍历，，注意输入时要特别注意格式
+typedef struct Tree {
+	int data;
+	struct Tree* lchild;
+	struct Tree* rchild;
+}Tree;
+
+void createTree(Tree** T, int* data, int* index) {
+	int ch;
+	ch = data[*index];
+	*index += 1;
+	if (ch == 0) {
+		*T = NULL;
+	}
+	else {
+		*T = (Tree*)malloc(sizeof(Tree));
+		(*T)->data = ch;
+		createTree(&((*T)->lchild), data, index);
+		createTree(&((*T)->rchild), data, index);
+	}
+}
+
+
+void Preorder(Tree* T) {
+	if (T == NULL) {
+		return;
+	}
+	else {
+		printf("%d ", T->data);
+		Preorder(T->lchild);
+		Preorder(T->rchild);
+	}
+}
+
+struct Tree* FindMin(struct Tree* root) {
+	if (root == NULL) {
+		return root;
+	}
+	root->lchild = FindMin(root->lchild);
+}
+struct Tree* Delete(struct Tree *root, int data) {
+	if (root == NULL) return root;
+	else if (data < root->data) root->lchild = Delete(root->lchild, data);
+	else if (data > root->data) root->rchild = Delete(root->rchild, data);
+	// Wohoo... I found you, Get ready to be deleted	
+	else {
+		// Case 1:  No child
+		if (root->lchild == NULL && root->rchild== NULL) {
+			delete root;
+			root = NULL;
+		}
+		//Case 2: One child 
+		else if (root->lchild == NULL) {
+			struct Tree *temp = root;
+			root = root->rchild;
+			delete temp;
+		}
+		else if (root->rchild == NULL) {
+			struct Tree *temp = root;
+			root = root->lchild;
+			delete temp;
+		}
+		// case 3: 2 children
+		else {
+			struct Tree *temp = FindMin(root->rchild);
+			root->data = temp->data;
+			root->rchild = Delete(root->rchild, temp->data);
+		}
+	}
+	return root;
+}
+
+int main() {
+	Tree* T;
+	struct Tree* R;
+	int index = 0;
+	int c;
+	int i,w;
+	int ch[20];
+	for (w = 0; w < 20; w++) {
+		scanf_s("%d", &c);
+		if (c == 1)break;
+		ch[w] = c;
+	}
+	index = 0;
+	createTree(&T, ch, &index); //要改变的值需要传地址
+	Preorder(T);
+	R = T;
+	printf("\n");
+	printf("请输入你要删除的数值:\n");
+	scanf_s("%d", &i);
+	printf("结果：\n");
+	T = Delete(T,i);
+	Preorder(R);
+	printf("\n");
+}
