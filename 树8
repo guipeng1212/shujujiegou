@@ -1,0 +1,105 @@
+#include <stdio.h>
+#include <stdlib.h>
+//创建树以及前序遍历，，注意输入时要特别注意格式
+typedef struct Tree {
+	int data;
+	struct Tree* lchild;
+	struct Tree* rchild;
+}Tree;
+
+void createTree(Tree** T, int* data, int* index) {
+	int ch;
+	ch = data[*index];
+	*index += 1;
+	if (ch == 0) {
+		*T = NULL;
+	}
+	else {
+		*T = (Tree*)malloc(sizeof(Tree));
+		(*T)->data = ch;
+		createTree(&((*T)->lchild), data, index);
+		createTree(&((*T)->rchild), data, index);
+	}
+}
+
+
+void Preorder(Tree* T) {
+	if (T == NULL) {
+		return;
+	}
+	else {
+		printf("%d ", T->data);
+		Preorder(T->lchild);
+		Preorder(T->rchild);
+	}
+}
+
+struct Tree* FindMin(struct Tree* root) {
+	if (root == NULL) {
+		return root;
+	}
+	while (root->lchild != NULL) {
+		root = root->lchild;
+	}
+	return root;
+}
+
+
+
+struct Tree* Find(struct Tree* root, int n) {
+	if (root == NULL) return NULL;
+	else if (root->data == n) return root;
+	else if (n > root->data) return Find(root->rchild, n);
+	else return Find(root->lchild, n);
+}
+
+
+struct Tree* Getsuccessor(struct Tree* root, int data) {
+	//search the node
+	struct Tree* current = Find(root, data);
+	if (current == NULL) {
+		return NULL;
+	}
+	else if (current->rchild != NULL) {  //如果右子树存在，返回子树中最小的
+		return FindMin(current->rchild);
+	}
+	else { // 如果右子树不存在
+		struct Tree* successor = NULL;
+		struct Tree* ancestor = root;
+		while (ancestor != current) {
+			if (current->data < ancestor->data) { //如果ancestor的值大于这个current
+				successor = ancestor;             //那么，把结果指向这个a
+				ancestor = ancestor->lchild;      //同时，a还有继续找，往小了找，一直找的
+			}                                     //最小的那个满足条件的。
+			else {                                //这是为了防止，所有的值的后继都是根节点
+				ancestor = ancestor->rchild;      //要是小了就往大了找。
+			}
+		}
+		return successor;
+	}
+}
+
+
+int main() {
+	Tree* T;
+	struct Tree* R;
+	int index = 0;
+	int c;
+	int i, w;
+	int ch[100];
+	for (w = 0; w < 100; w++) {
+		scanf_s("%d", &c);
+		if (c == 1)break;
+		ch[w] = c;
+	}
+	index = 0;
+	createTree(&T, ch, &index); //要改变的值需要传地址
+	Preorder(T);
+	R = T;
+	printf("\n");
+	printf("请输入你要查找的数值:\n");
+	scanf_s("%d", &i);
+	printf("结果：\n");
+	printf("%d ", Getsuccessor(T, i)->data);
+	printf("\n");
+}
