@@ -26,7 +26,7 @@ void Print() {
 	}
 	printf("\n");
 
-}
+}是
 void Change() {
 	Node* y1 = head; //负责保存要改变的结点
 	Node* y2 = head; //负责遍历
